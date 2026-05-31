@@ -1,0 +1,34 @@
+version: '3.4'
+
+services:
+  geo-event-db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: geo-event-db-container
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=SuperSecretPassword123!
+    ports:
+      - "1433:1433"
+    volumes:
+      - geo-event-db-data:/var/opt/mssql
+    restart: always
+
+  geo-eventapi:
+    image: ${DOCKER_REGISTRY-}geoeventapi
+    container_name: geo-event-api-container
+    build:
+      context: .
+      dockerfile: Geo-Event API/Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=geo-event-db;Database=GeoEventDb;User Id=sa;Password=SuperSecretPassword123!;TrustServerCertificate=True;
+      - JwtSettings__SecretKey=SuperSecretKeyForGeoEventApiWhichMustBeAtLeast32CharactersLong!
+      - JwtSettings__Issuer=GeoEventApi
+      - JwtSettings__Audience=GeoEventClients
+    depends_on:
+      - geo-event-db 
+
+volumes:
+  geo-event-db-data:

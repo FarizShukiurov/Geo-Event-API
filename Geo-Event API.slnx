@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="docker-compose.dcproj">
+    <Build />
+  </Project>
+  <Project Path="Geo-Event API/Geo-Event API.csproj" />
+</Solution>

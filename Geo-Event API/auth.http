@@ -1,0 +1,195 @@
+@baseUrl = http://localhost:5000/api
+
+### ============================================
+### REGISTRATION TESTS
+### ============================================
+
+### Valid registration
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "username": "john_doe",
+  "email": "john@example.com",
+  "password": "SecurePass123!",
+  "confirmPassword": "SecurePass123!"
+}
+
+### Invalid registration - passwords don't match
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "username": "jane_doe",
+  "email": "jane@example.com",
+  "password": "SecurePass123!",
+  "confirmPassword": "DifferentPass123!"
+}
+
+### Invalid registration - weak password
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "username": "weak_user",
+  "email": "weak@example.com",
+  "password": "weak",
+  "confirmPassword": "weak"
+}
+
+### Invalid registration - invalid email
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "username": "invalid_email",
+  "email": "not-an-email",
+  "password": "SecurePass123!",
+  "confirmPassword": "SecurePass123!"
+}
+
+### Invalid registration - username too short
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "username": "ab",
+  "email": "short@example.com",
+  "password": "SecurePass123!",
+  "confirmPassword": "SecurePass123!"
+}
+
+### Invalid registration - username with invalid characters
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "username": "user@invalid",
+  "email": "invalid@example.com",
+  "password": "SecurePass123!",
+  "confirmPassword": "SecurePass123!"
+}
+
+### Duplicate username registration
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "username": "john_doe",
+  "email": "different@example.com",
+  "password": "SecurePass123!",
+  "confirmPassword": "SecurePass123!"
+}
+
+### Duplicate email registration
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "username": "different_user",
+  "email": "john@example.com",
+  "password": "SecurePass123!",
+  "confirmPassword": "SecurePass123!"
+}
+
+### ============================================
+### LOGIN TESTS
+### ============================================
+
+### Valid login
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "username": "john_doe",
+  "password": "SecurePass123!"
+}
+
+### Invalid login - user not found
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "username": "nonexistent_user",
+  "password": "SecurePass123!"
+}
+
+### Invalid login - wrong password
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "username": "john_doe",
+  "password": "WrongPassword123!"
+}
+
+### Invalid login - empty username
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "username": "",
+  "password": "SecurePass123!"
+}
+
+### Invalid login - empty password
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "username": "john_doe",
+  "password": ""
+}
+
+### ============================================
+### EVENTS TESTS (EXISTING)
+### ============================================
+
+### Get nearby events
+GET {{baseUrl}}/events/nearby?lng=37.6173&lat=55.7558&radius=5000&pageNumber=1&pageSize=10
+
+### Create event
+POST {{baseUrl}}/events
+Content-Type: application/json
+
+{
+  "title": "Tech Conference",
+  "description": "Annual tech conference",
+  "eventDate": "2026-12-31T18:00:00Z",
+  "latitude": 55.7558,
+  "longitude": 37.6173
+}
+
+### ============================================
+### PASSWORD REQUIREMENTS EXAMPLES
+### ============================================
+
+# ✅ VALID PASSWORDS (at least 8 chars, 1 uppercase, 1 lowercase, 1 digit, 1 special char)
+# - SecurePass123!
+# - MyP@ssw0rd
+# - Test#Pass123
+# - ValidPassword@2026
+
+# ❌ INVALID PASSWORDS
+# - password123 (no uppercase, no special char)
+# - PASSWORD123! (no lowercase)
+# - Pass123! (only 8 chars, fine actually)
+# - Pass! (too short, no digit)
+# - P@ss1 (too short, only 5 chars)
+# - NoSpecial123 (no special character)
+
+### ============================================
+### USERNAME REQUIREMENTS
+### ============================================
+
+# ✅ VALID USERNAMES (3-50 chars, alphanumeric + underscore/hyphen)
+# - john_doe
+# - user-123
+# - admin_user_2024
+# - test_account
+
+# ❌ INVALID USERNAMES
+# - ab (too short)
+# - user@domain (contains @)
+# - john.doe (contains .)
+# - user name (contains space)
