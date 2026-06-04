@@ -1,7 +1,20 @@
 services:
+  geo-event-db:
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=SuperSecretPassword123!
+    ports:
+      - "1433:1433"
+
   geo-eventapi:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_HTTP_PORTS=8080
+      - ConnectionStrings__DefaultConnection=Server=geo-event-db;Database=GeoEventDb;User Id=sa;Password=SuperSecretPassword123!;TrustServerCertificate=True;
+      - JwtSettings__SecretKey=SuperSecretKeyForGeoEventApiWhichMustBeAtLeast32CharactersLong!
+      - JwtSettings__Issuer=GeoEventApi
+      - JwtSettings__Audience=GeoEventClients
     ports:
-      - "8080"
+      - "8080:8080"
+    depends_on:
+      - geo-event-db
